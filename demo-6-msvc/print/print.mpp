@@ -1,0 +1,15 @@
+
+export module print;
+import std.core; // Only with MSVC
+
+
+export __symexport
+void print(std::string input);
+
+export __symexport
+void print_error(std::string input);
+
+
+
+
+

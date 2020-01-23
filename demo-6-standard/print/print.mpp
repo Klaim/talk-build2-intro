@@ -1,0 +1,18 @@
+module;
+#include <iostream>
+#include <string>
+
+export module print;
+
+
+
+export __symexport
+void print(std::string input);
+
+export __symexport
+export void print_error(std::string input);
+
+
+
+
+

@@ -28,6 +28,7 @@ Bottom-up introduction to `build2`
   - `build2` have nothing to do with `boost.build`'s `b2` provided and used by Boost.
   - I will not directly compare `build2` to CMake, that would be too long
   - We'll use `build2` `v0.12.0`
+  - I'll use Windows to demo but it's working the same or easier on unix-like platforms.
   - This will be interactive, raise your hand if you have questions.
 
 ### Questions
@@ -39,6 +40,13 @@ Bottom-up introduction to `build2`
 5. Who wants to make a talk about Meson?
 6. Who wants to make a talk about vcpkg?
 7. Who is only here to eat for free?
+
+## What Is `build2`
+
+### Toolset
+
+1. Build system
+
 
 ## Build-System
 ### Demo 1 : just build some code
@@ -220,7 +228,26 @@ Bottom-up introduction to `build2`
     lib{print} : print/{cxx mxx}{*}
     ```
 
-4.
+4. Change the code to import instead of include. (open source files)
+
+
+### Demo 6 : did you say "modules" as dynamic libaries?
+
+1. Extension provided by `build2`: `symexport`
+    ```
+    cxx.features.symexport = true
+    ```
+    - Requires modules to be available.
+
+2. Force usage of the shared-library:
+    ```
+    exe{hello} : hello/{hxx cxx}{*} libs{print}
+    ```
+
+3. Use `__symexport` in code where you would use symbol import/export macros.
+
+
+
 
 
 
