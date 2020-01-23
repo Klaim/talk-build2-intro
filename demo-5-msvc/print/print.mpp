@@ -1,0 +1,12 @@
+
+export module print;
+import std.core; // Only with MSVC
+
+
+export void print(std::string input);
+export void print_error(std::string input);
+
+
+
+
+
