@@ -43,9 +43,58 @@ Bottom-up introduction to `build2`
 
 ## What Is `build2`
 
-### Toolset
+https://build2.org
 
-1. Build system
+> build2 is an open source (MIT), cross-platform build toolchain for developing and packaging C and C++ code. It is a hierarchy of tools that includes the build system, package dependency manager (for package consumption), and project dependency manager (for project development).
+>
+> Key features:
+> - Next-generation, Cargo-like integrated build toolchain for C and C++.
+> - Covers entire project lifecycle: creation, development, testing, and delivery.
+> - Uniform and consistent interface across all platforms and compilers.
+> - Fast, multi-threaded build system with parallel building and testing.
+> - Archive and version control-based package repositories.
+> - Dependency-free, all you need is a C++ compiler.
+
+### Toolset's Core
+
+1. Build-system: `b`
+    - same position as: make, msbuild, Ninja, Bazel, ...
+    - not a meta-buildsystem like: CMake, Meson, PreMake...
+      - CMake, Meson and Premake could have generators for `build2`
+    - supports C and C++ by default
+    - extensible through build-system modules (languages, build-system features)
+    - provides testing features
+
+2. Package Manager: `bpkg`
+    - same position as: Conan, vcpkg, hunter, pip, gem, npm, ...
+    - handles build configurations (more on that later)
+    - relies on `b` to build packages
+    - supports `build2` packages, `pkg-config` packages (and probably more in the future)
+    - supports remote package repositories as:
+        - archives-based repositories (simple `http` server or `brep`)
+        - `git` repository
+
+3. Project Dependency Manager: `bdep`
+    - drives `bpkg` and `b` for larger operations
+    - helps creating new projects and sub-projects
+
+4. Most of the time when developing a project we use either `bdep` or `bpkg`.
+    Direct usage of `bpkg` comes when doing more advanced manipulations.
+
+### Facilities
+
+1. Build-system modules for testing, versionning, etc.
+2. Continuous Integration
+3. Online Repository
+
+4. Self-hosted package repository: `brep` (not provided by default)
+    - base of the central repository: https://cppget.org
+    - you can setup your own instance (didn't try yet)
+
+
+
+
+
 
 
 ## Build-System
