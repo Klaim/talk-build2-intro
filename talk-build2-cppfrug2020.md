@@ -72,7 +72,7 @@ https://build2.org
     - supports `build2` packages, `pkg-config` packages (and probably more in the future)
     - supports remote package repositories as:
         - archives-based repositories (simple `http` server or `brep`)
-        - `git` repository
+        - `git` repositories
 
 3. Project Dependency Manager: `bdep`
     - drives `bpkg` and `b` for larger operations
