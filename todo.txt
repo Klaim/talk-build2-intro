@@ -1,0 +1,8 @@
+
+- PRINT instructions
+- simplify instructions
+- complete instructions
+- fix order of slides
+- check that instructions works
+
+

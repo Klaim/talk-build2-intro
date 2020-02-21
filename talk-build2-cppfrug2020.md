@@ -1,7 +1,63 @@
 
 
+
+0. Quick Start
+    - clone a project
+    - make a modification
+    - test on several configs
+    - install
+    - run
+    - commit
+    - push change
+    - request CI
+1. presentation
+    - who am I (?)
+    - why this talk
+    - clarifications (?)
+    - questions
+2. what is build2
+ - website definition
+ - toolset organisation
+3. buildsystem demo
+ - b
+ - targets
+ - options/properties
+4. slides: concepts
+ - configuration
+ - project/package
+5. demo project management
+ - project files (manual)
+ - bdep new (automatic)
+ - bpkg ?
+ - manage dependencies (+cppget.org)
+ - use a modified/cloned dependency
+6. project life tools (demo?)
+ - testing (`b test`, testscript)
+ - dist, install
+ - CI
+ - release
+ - publish
+7. build2 in perspective
+ - project status
+ - why not use it
+ - why use it
+8. DONE
+
+--------------------------------------
+
 Bottom-up introduction to `build2`
 ==================================
+
+## Hello World ?
+
+```
+bdep new kikoo
+cd kikoo
+b test
+code . #
+b install config.install.root=../install
+
+```
 
 ## Presentation
 ### Who am I
@@ -93,7 +149,7 @@ https://build2.org
 
 
 
-
+-----------------------------------------------------------------------------
 
 
 
@@ -113,8 +169,8 @@ https://build2.org
    - In `build2`, C++ is just a build-system module.
    - That's what is used to build `build2` itself.
    - There are other buils-system modules to add features and languages (`c`, `testing` etc.)
-   - You use what you need.
    - There is an experiment for a `rust` build-system module.
+   - Allow users to extend the build system for their projects or add new languages.
 
 
 4. Add a target:
@@ -125,11 +181,12 @@ https://build2.org
    ```
    target-name : requirement-1 requirement-2
    ```
-   - However it adds **typing** to the targets, instead of **recipes**
+   - However `build2` adds **typing** to the targets, instead of **recipes**
    ```
    typeA{target-name} : typeB{requirement-1} typeC{requirement-2}
    ```
    - `cxx` targets are C++ compilation unit, `hxx` are C++ headers etc.
+   -
 
 5. Change the default extension to `cpp` and `hpp`:
     ```
@@ -149,7 +206,7 @@ https://build2.org
     - The compiler used by default depends on which compiler was used to build/install `build2`
     - We can specify the compiler and other variables for a specific invocation:
     ```
-    b config.cxx=clang++-9
+    b config.cxx=clang++
     ```
     - On Windows, the default `msvc` compiler is the highest version, including previews.
     - We can pecify a compiler path (the rest is guessed from the compiler name):
@@ -158,11 +215,9 @@ https://build2.org
     ```
     - We can specify `C++` version that way too, otherwise it's `latest`:
     ```
-    b config.cxx.std=14     # -std=c++14 (if the compiler allows it)
-    b config.cxx.std=latest # last released C++
+    b config.cxx.std=17     # -std=c++17 (if the compiler allows it)
+    b config.cxx.std=latest # highest available C++ version
     ```
-
-
 
 7. Cleanup:
     ```
@@ -170,7 +225,15 @@ https://build2.org
     ```
     - We can chain commands: `b clean update`
     - Commands are provided and implemented by build-system modules.
+
+8. Info:
+    ```
+    b info
+    ```
     - To see all the available commands of a project: `b info`
+    - (describe each field)
+    - note that this is not considered as a true "project" yet
+
 
 ### Demo 2 : just build all the files
 
@@ -199,6 +262,9 @@ https://build2.org
     exe{hello} : {cxx hxx}{**}
     ```
     - Shorter.
+    - It's recommended to use globing with `build2`, there is no issue with it:
+        - no need to touch the buildfiles if you just add code
+        - makes things easier with massive refactoring
 
 ### Demo 3 : just a library
 
@@ -208,7 +274,7 @@ https://build2.org
     ```
     exe{hello} : {cxx}{hello} lib{print}
 
-    lib{print}: {cxx hxx}{print}
+    lib{print} : {cxx hxx}{print}
     ```
     - order of target declaration is not important
     - by default the first target (and it's requirement) is built
@@ -296,6 +362,80 @@ https://build2.org
 3. Use `__symexport` in code where you would use symbol import/export macros.
 
 
+### Demo 7 : conditions, loops, switches
+
+- declarative but does allow loops and conditions
+- conditionally depend on pthread
+
+### Demo 8 : Project
+
+- setup code as project, with a name
+- add more bs modules
+- show b info
+
+### Demo 9 : Tests
+
+- make an executable as test
+- show testscript (good case, error case)
+
+### Demo 10 : Configuration
+
+- change the compiler to clang
+- store the configuration
+- edit the configuration
+- make separate configurations for clang and msvc
+
+### Demo 11 : declare Dependencies
+
+- add an import
+- introduce the notion of package
+- add a manifest
+- add module "version"
+
+### Demo 12 : Handle dependencies in configurations
+
+- introduce the notion of configuration directory
+- create a configuration
+- build a dependency using their git repo
+- check config and list of dependencies directires
+- add a repository
+- build a package from that repo
+
+- build the project using that configuration (manually)
+
+### Demo 13 : New project
+
+bdep new (exe)
+modifie le projet
+build & test
+add dependencies & repositories
+bdep init with old configuration
+bdep init with new configuration
+build test with all configurations
+
+bdep new lib
+make the exe project depend on the lib
+bdep init in configurations
+build test all
+
+### Demo 14 : juggle with dependencies
+
+- in libkikoo project:
+- add dependencies from main repo
+- bdep status -r
+- in kikoo project:
+- change version of one dependency (no manifest change)
+-
+
+### Demo 15 : release versions
+
+- make a release of libkikoo
+- modify libkikoo
+- make another release of libkikoo
+
+
+
+### Demo 16 :
 
 
 
@@ -307,26 +447,8 @@ https://build2.org
 
 
 
----------------------------------------------
 
 
-simple, 1 buildfile, few cpp files
- 1. C/C++ is a buildsystem module
- 2. show that the target system and syntax are similar to make
- 3. build and run a small executable
- 4. add files without changing the buildfile and build+run them
- 5. add a simple (static) library used by the initial executable
- 6. add a module library
- 7. add `__symexport` to allow libraries to be dynamic
-
-
-  1. `build2` toolset
-    1. build system + package manager + testing + ...
-    2.  `b` is the buildsystem: make, msbuild, ninja, etc...
-        It's NOT a meta-buildsystem like CMake, Meson...
-        `b2` is NOT `b` and is part of `boost.build`, another build system used by Boost.
-    3.  `bpkg` is the package manager: conan, vcpkg, etc.
-    4.  `bdep` is
 
 
 
