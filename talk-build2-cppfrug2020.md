@@ -366,6 +366,7 @@ https://build2.org
 
 - declarative but does allow loops and conditions
 - conditionally depend on pthread
+- generate executable per cpp
 
 ### Demo 8 : Project
 
@@ -375,7 +376,7 @@ https://build2.org
 
 ### Demo 9 : Tests
 
-- make an executable as test
+- make group of executables as test
 - show testscript (good case, error case)
 
 ### Demo 10 : Configuration
