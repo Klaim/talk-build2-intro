@@ -45,8 +45,8 @@
 
 --------------------------------------
 
-Bottom-up introduction to `build2`
-==================================
+`build2` from scratch
+=====================
 
 ## Hello World ?
 
@@ -364,9 +364,29 @@ https://build2.org
 
 ### Demo 7 : conditions, loops, switches
 
-- declarative but does allow loops and conditions
-- conditionally depend on pthread
-- generate executable per cpp
+We now `lib{print}` use `<thread>`, it needs to depend on `pthread`.
+
+1. Conditionally depend on pthread:
+    ```
+    if ($cxx.target.class != 'windows')
+    {
+        cxx.libs += -lpthread
+    }
+    ```
+    - Language is declarative but does allow loops and conditions
+
+2. Pattern matching with `switch`:
+
+2. Generate executable per cpp with `for`:
+    ```
+    for test_cpp : cxx{tests/print/**}
+    {
+        test_name = $name($test_cpp)
+        ./ : exe{$test_name} : $test_cpp liba{print}
+    }
+    ```
+    - Repeat rules depending on context
+    - No need to update the buildfile to add tests
 
 ### Demo 8 : Project
 
