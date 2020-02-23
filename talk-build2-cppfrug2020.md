@@ -390,28 +390,146 @@ We now `lib{print}` use `<thread>`, it needs to depend on `pthread`.
 
 ### Demo 8 : Project
 
-- setup code as project, with a name
-- add more bs modules
-- show b info
+We want this to be a real installable project.
+
+0. New files for projects:
+    - switch to `build2file` mode
+
+1. Setup code as project, with a name :
+    - Add `build2/bootstrap.build2`
+    ```
+    projet = kikoo
+    ```
+    - `b info` we can see the name of the project
+
+3. Add more bs modules in `build2/bootstrap.build2`:
+    ```
+    using config
+    using test
+    using install
+    using dist
+    ```
+    - `b info` we can see more operations available
+
+4. Add info common to all buildfiles in `build2/root.build2`:
+    ```
+    cxx.std = 17
+
+    using cxx
+
+    cxx{*}: extension = cpp
+    hxx{*}: extension = hpp
+    ```
+    - Any `build2file` in the project will be prefixed by the content of this file.
 
 ### Demo 9 : Tests
 
-- make group of executables as test
-- show testscript (good case, error case)
+0. `b test` shows that there is nothing to test.
+
+1. Mark executable tests as being tests (in `build2file`):
+    ```
+    exe{$test_name} : test = true
+    ```
+    - `b test` will run the executable and expect `0` for success.
+    - (Show failing test and fix it)
+    - Tests are launched in parallel by default (overlapping output).
+    - We can use `-s` to do operations in a "serial" way.
+
+2. `testscript` is a tool for testing output and interactive programs:
+    - Add `hello/testscript`
+    ```
+    : basics
+    :
+    $* 'World' > '> Hello, World!'
+
+    : missing-name
+    :
+    $* 2>>EOE != 0
+    > I need a (1) name.
+    EOE
+    ```
+    - Make `hello` being tested by adding to `build2file`:
+    ```
+    exe{hello} : hello/testscript
+    ```
+    - `b test` shows failing tests, fix them
+    -
 
 ### Demo 10 : Configuration
 
-- change the compiler to clang
-- store the configuration
-- edit the configuration
-- make separate configurations for clang and msvc
+We want to use clang instead of the default compiler (msvc):
 
-### Demo 11 : declare Dependencies
+1. Change the compiler to clang and build and test:
+    ```
+    b config.cxx=clang++ test
+    ```
+    - All configuration information are variables.
+    ```
+    b config.cxx=clang++ clean
+    ```
+    - Repeating the config in cli is problematic.
 
-- add an import
-- introduce the notion of package
-- add a manifest
-- add module "version"
+2. Store the configuration:
+    ```
+    b configure: config.cxx=clang++
+    ```
+    - `b -v` Shows that we work with clang now.
+
+3. Edit the configuration:
+    - (show `build2/config.build2`)
+    - This project will always use this config file.
+    - Variables are the same than in cli.
+    - Replace:
+    ```
+    config.cxx = cl
+    ```
+
+4. We can create separate configuration directories.
+    Handling multiple configurations manually with `b` is possible.
+    However, it is far simpler if we make the project be a package first.
+
+### Demo 11 : Project Package And Importing Dependencies
+
+0. Add in `build2/bootstrap.build2'
+    ```
+    using version
+    ```
+    - We need this to make version information available to other operations.
+
+1. Add a `manifest` file.
+    ```
+    : 1
+    name: kikoo
+    version: 0.1.0-a.0.z
+    summary: kikoo toolset
+    license: proprietary
+    description-file: README.md
+    url: https://example.org/mylib
+    email: mjklaim@gmail.com
+
+    depends: * build2 >= 0.12.0
+    depends: * bpkg >= 0.12.0
+    ```
+   - (Introduces the notion of package.)
+   - `b info` Now shows the info from the manifest.
+   - The version number follows SEMVER pluss a few rules to make `build2` automatically manage it.
+   - Here the `z` is whatever identifies this non-released version and `a` means "alpha".
+
+2. Depend on `lib{fmt}`:
+    - Add in `build2file`:
+    ```
+    import dependencies = fmt%lib{fmt}
+    lib{print} : $dependencies
+    ```
+    - We get an error because the package is not found.
+
+3. Depend on `fmt` package:
+    - Add in `manifest`:
+    ```
+    depends: fmt ^3.3.0
+    ```
+    - The package is still not found because it have not be made available.
+    - Time to setup a configuration with our packages using `bpkg`.
 
 ### Demo 12 : Handle dependencies in configurations
 

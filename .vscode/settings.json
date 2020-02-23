@@ -1,4 +1,14 @@
 {
     "editor.insertSpaces": true,
-    
+    "files.associations": {
+        "*.mxx": "cpp",
+        "*.mpp": "cpp",
+        "*.cxx": "cpp",
+        "*.hxx": "cpp",
+        "buildfile": "makefile",
+        "build2file": "makefile",
+        "*.build2": "makefile",
+        "*.build": "makefile",
+    },
+
 }

@@ -4,5 +4,5 @@ using cxx
 cxx{*}: extension = cpp
 hxx{*}: extension = hpp
 
-exe{hello} : cxx{hello}
+exe{hello} : cxx{kikoo}
 
