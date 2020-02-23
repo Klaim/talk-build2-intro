@@ -1,157 +1,7 @@
-
-
-
-0. Quick Start
-    - clone a project
-    - make a modification
-    - test on several configs
-    - install
-    - run
-    - commit
-    - push change
-    - request CI
-1. presentation
-    - who am I (?)
-    - why this talk
-    - clarifications (?)
-    - questions
-2. what is build2
- - website definition
- - toolset organisation
-3. buildsystem demo
- - b
- - targets
- - options/properties
-4. slides: concepts
- - configuration
- - project/package
-5. demo project management
- - project files (manual)
- - bdep new (automatic)
- - bpkg ?
- - manage dependencies (+cppget.org)
- - use a modified/cloned dependency
-6. project life tools (demo?)
- - testing (`b test`, testscript)
- - dist, install
- - CI
- - release
- - publish
-7. build2 in perspective
- - project status
- - why not use it
- - why use it
-8. DONE
-
---------------------------------------
-
 `build2` from scratch
 =====================
 
-## Hello World ?
-
-```
-bdep new kikoo
-cd kikoo
-b test
-code . #
-b install config.install.root=../install
-
-```
-
-## Presentation
-### Who am I
-  Joël Lamotte aka "Klaim", I use CMake at work and home,
-  I also use `build2` to experiment for future projects,
-  and at work in some prototypes.
-  My job is currently in robotics but I have a background in other domains
-  mostly videogames and embedded software.
-
-### Why this talk?
-  Someone asked a few months ago to CPPFrugs
-  that I present `build2` as an alternative to `CMake`.
-  A lot of people are frustrated with `CMake` and are looking
-  for new tools but lack the time for a proper introduction.
-  As I am interested in `build2` (but not an expert) and experiment a lot
-  with it for future projects, I was asked to give an intro of how it works.
-
-  I will explain how `build2` works with the goal that you can start using
-  it immediately after the talk after having installed it.
-  You still need to read the official documentation, but this should be a good
-  starting point to at least play with it.
-
-### Clarifications
-  - `build2` have nothing to do with `boost.build`'s `b2` provided and used by Boost.
-  - I will not directly compare `build2` to CMake, that would be too long
-  - We'll use `build2` `v0.12.0`
-  - I'll use Windows to demo but it's working the same or easier on unix-like platforms.
-  - This will be interactive, raise your hand if you have questions.
-
-### Questions
-
-1. Who is familiar with CMake?
-2. Who is familiar with Make?
-3. Who is not familiar with how C++ code is built? (transformed into executable binaries)
-4. Who is familiar with C++20 Modules?
-5. Who wants to make a talk about Meson?
-6. Who wants to make a talk about vcpkg?
-7. Who is only here to eat for free?
-
-## What Is `build2`
-
-https://build2.org
-
-> build2 is an open source (MIT), cross-platform build toolchain for developing and packaging C and C++ code. It is a hierarchy of tools that includes the build system, package dependency manager (for package consumption), and project dependency manager (for project development).
->
-> Key features:
-> - Next-generation, Cargo-like integrated build toolchain for C and C++.
-> - Covers entire project lifecycle: creation, development, testing, and delivery.
-> - Uniform and consistent interface across all platforms and compilers.
-> - Fast, multi-threaded build system with parallel building and testing.
-> - Archive and version control-based package repositories.
-> - Dependency-free, all you need is a C++ compiler.
-
-### Toolset's Core
-
-1. Build-system: `b`
-    - same position as: make, msbuild, Ninja, Bazel, ...
-    - not a meta-buildsystem like: CMake, Meson, PreMake...
-      - CMake, Meson and Premake could have generators for `build2`
-    - supports C and C++ by default
-    - extensible through build-system modules (languages, build-system features)
-    - provides testing features
-
-2. Package Manager: `bpkg`
-    - same position as: Conan, vcpkg, hunter, pip, gem, npm, ...
-    - handles build configurations (more on that later)
-    - relies on `b` to build packages
-    - supports `build2` packages, `pkg-config` packages (and probably more in the future)
-    - supports remote package repositories as:
-        - archives-based repositories (simple `http` server or `brep`)
-        - `git` repositories
-
-3. Project Dependency Manager: `bdep`
-    - drives `bpkg` and `b` for larger operations
-    - helps creating new projects and sub-projects
-
-4. Most of the time when developing a project we use either `bdep` or `bpkg`.
-    Direct usage of `bpkg` comes when doing more advanced manipulations.
-
-### Facilities
-
-1. Build-system modules for testing, versionning, etc.
-2. Continuous Integration
-3. Online Repository
-
-4. Self-hosted package repository: `brep` (not provided by default)
-    - base of the central repository: https://cppget.org
-    - you can setup your own instance (didn't try yet)
-
-
-
------------------------------------------------------------------------------
-
-
+These are the live-coding notes.
 
 ## Build-System
 ### Demo 1 : just build some code
@@ -169,7 +19,7 @@ https://build2.org
    - In `build2`, C++ is just a build-system module.
    - That's what is used to build `build2` itself.
    - There are other buils-system modules to add features and languages (`c`, `testing` etc.)
-   - There is an experiment for a `rust` build-system module.
+   - (There is an experiment for a `rust` build-system module.)?
    - Allow users to extend the build system for their projects or add new languages.
 
 
@@ -181,7 +31,7 @@ https://build2.org
    ```
    target-name : requirement-1 requirement-2
    ```
-   - However `build2` adds **typing** to the targets, instead of **recipes**
+   - However `build2` adds **types** to the targets, instead of **recipes**
    ```
    typeA{target-name} : typeB{requirement-1} typeC{requirement-2}
    ```
@@ -455,7 +305,7 @@ We want this to be a real installable project.
     - `b test` shows failing tests, fix them
     -
 
-### Demo 10 : Configuration
+### Demo 10 : Simple Configuration
 
 We want to use clang instead of the default compiler (msvc):
 
@@ -531,7 +381,7 @@ We want to use clang instead of the default compiler (msvc):
     - The package is still not found because it have not be made available.
     - Time to setup a configuration with our packages using `bpkg`.
 
-### Demo 12 : Handle dependencies in configurations
+### Demo 12 : Dependencies And Configurations
 
 - introduce the notion of configuration directory
 - create a configuration

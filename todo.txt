@@ -6,3 +6,45 @@
 - check that instructions works
 
 
+
+0. Quick Start
+    - clone a project
+    - make a modification
+    - test on several configs
+    - install
+    - run
+    - commit
+    - push change
+    - request CI
+1. presentation
+    - who am I (?)
+    - why this talk
+    - clarifications (?)
+    - questions
+2. what is build2
+ - website definition
+ - toolset organisation
+3. buildsystem demo
+ - b
+ - targets
+ - options/properties
+4. slides: concepts
+ - configuration
+ - project/package
+5. demo project management
+ - project files (manual)
+ - bdep new (automatic)
+ - bpkg ?
+ - manage dependencies (+cppget.org)
+ - use a modified/cloned dependency
+6. project life tools (demo?)
+ - testing (`b test`, testscript)
+ - dist, install
+ - CI
+ - release
+ - publish
+7. build2 in perspective
+ - project status
+ - why not use it
+ - why use it
+8. DONE
