@@ -466,6 +466,7 @@ Instead we use `bdep` to handle our projects.
     b test
     ```
     - Everything works fine.
+    - Symbolic links were added for executables.
     - Make a first commit:
     ```
     git add .
@@ -556,6 +557,7 @@ Instead we use `bdep` to handle our projects.
 
 ### Demo 14 : juggle with dependencies
 
+- clone big project
 - in libkikoo project:
 - add dependencies from main repo
 - bdep status -r
