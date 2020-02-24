@@ -12,6 +12,9 @@ exe{hello} : hello/testscript
 lib{print} : print/{cxx hxx}{*}
 lib{print} : cxx.export.poptions =+ "-I$src_root"
 
+# import dependencies = fmt%lib{fmt}
+# lib{print} : $dependencies
+
 for test_cpp : cxx{tests/print/**}
 {
     test_name = $name($test_cpp)

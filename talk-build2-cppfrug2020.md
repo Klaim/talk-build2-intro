@@ -27,16 +27,10 @@ These are the live-coding notes.
     ```
     exe{hello} : cxx{hello}
     ```
-   - `build2` follows a inherit the target system from make:
-   ```
-   target-name : requirement-1 requirement-2
-   ```
-   - However `build2` adds **types** to the targets, instead of **recipes**
-   ```
-   typeA{target-name} : typeB{requirement-1} typeC{requirement-2}
-   ```
+   - `build2` follows a inherit the target system from make
+   - (show slides on target syntax)
    - `cxx` targets are C++ compilation unit, `hxx` are C++ headers etc.
-   -
+
 
 5. Change the default extension to `cpp` and `hpp`:
     ```
@@ -227,7 +221,7 @@ We now `lib{print}` use `<thread>`, it needs to depend on `pthread`.
 
 2. Pattern matching with `switch`:
 
-2. Generate executable per cpp with `for`:
+3. Generate executable per cpp with `for`:
     ```
     for test_cpp : cxx{tests/print/**}
     {
@@ -240,7 +234,7 @@ We now `lib{print}` use `<thread>`, it needs to depend on `pthread`.
 
 ### Demo 8 : Project
 
-We want this to be a real installable project.
+We want this to be a real testable project.
 
 0. New files for projects:
     - switch to `build2file` mode
@@ -307,7 +301,7 @@ We want this to be a real installable project.
 
 ### Demo 10 : Simple Configuration
 
-We want to use clang instead of the default compiler (msvc):
+We want to always use clang instead of the default compiler (msvc):
 
 1. Change the compiler to clang and build and test:
     ```
@@ -338,7 +332,7 @@ We want to use clang instead of the default compiler (msvc):
     Handling multiple configurations manually with `b` is possible.
     However, it is far simpler if we make the project be a package first.
 
-### Demo 11 : Project Package And Importing Dependencies
+### Demo 11 : Complete Project Package
 
 0. Add in `build2/bootstrap.build2'
     ```
@@ -365,7 +359,23 @@ We want to use clang instead of the default compiler (msvc):
    - The version number follows SEMVER pluss a few rules to make `build2` automatically manage it.
    - Here the `z` is whatever identifies this non-released version and `a` means "alpha".
 
-2. Depend on `lib{fmt}`:
+2. Install:
+    ```
+    b install
+    ```
+    - Fails until we specify `config.install.root=../some/dir`
+    ```
+    b install config.install.root=../install
+    ```
+    - Builds and install, follows rules from the builfiles and target types defaults.
+    - Missing `.lib` files because no symbol is exported, not a problem for now (we'll see later how to fix this).
+
+
+### Demo 12 : Importing libraries
+
+0. Importing Dependencies
+
+1. Depend on `lib{fmt}`:
     - Add in `build2file`:
     ```
     import dependencies = fmt%lib{fmt}
@@ -373,39 +383,176 @@ We want to use clang instead of the default compiler (msvc):
     ```
     - We get an error because the package is not found.
 
-3. Depend on `fmt` package:
+2. Depend on `fmt` package:
     - Add in `manifest`:
     ```
-    depends: fmt ^3.3.0
+    depends: fmt ^6.0.0
     ```
     - The package is still not found because it have not be made available.
     - Time to setup a configuration with our packages using `bpkg`.
+    - The version expression defines a range of allowed versions.
 
-### Demo 12 : Dependencies And Configurations
+### Demo 13 : Dependencies And Configurations
 
-- introduce the notion of configuration directory
-- create a configuration
-- build a dependency using their git repo
-- check config and list of dependencies directires
-- add a repository
-- build a package from that repo
+(introduce the notion of configuration)
 
-- build the project using that configuration (manually)
+1. Create a configuration
+    ```
+    bpkg create -d ./build-msvc cc
+    ```
+    - We could specify the properties on cli too:
+    ```
+    bpkg create -d ./build-clang cc config.cxx=clang++ config.c=clang
+    ```
 
-### Demo 13 : New project
+2. Build a dependency using their git repo:
+    ```
+    cd build-msvc
+    bpkg build https://github.com/build2-packaging/sol2.git
+    ```
+    - Add repository, fetch, find last released package, take a source snapshot, configure, build.
+    - We can also build a specific version:
+    ```
+    bpkg build https://github.com/build2-packaging/sol2.git#develop
+    ```
+    - We can also `test`, `install` etc.
 
-bdep new (exe)
-modifie le projet
-build & test
-add dependencies & repositories
-bdep init with old configuration
-bdep init with new configuration
-build test with all configurations
+3. (Look into the config directory)
+    - We can edit `build/config.build2` manually.
 
-bdep new lib
-make the exe project depend on the lib
-bdep init in configurations
-build test all
+4. Add a repository (cppget):
+    ```
+    bpkg add https://pkg.cppget.org/1/stable
+    ```
+    - (show cppget.org/fmt and the links to the stable repos)
+
+5. Build `fmt` from that repo:
+    ```
+    bpkg build fmt
+    ```
+    - As before, last version is fetched
+
+6. Build the project using that configuration (manually):
+    ```
+    bpkg build ../kikoo/
+    ```
+    - (show the content of the configuration)
+
+### Demo 14 : New project
+
+Usually we don't manipulate projects that way because there is too many operations and things to know.
+Instead we use `bdep` to handle our projects.
+
+1. Create a new project:
+    ```
+    bdep new kikoo
+    ```
+    - (show directory created)
+    - Almost similar project except:
+    - `repositories.manifest` : where we can specify some repositories to add to configs automatically.
+        - Useful for specific in-dev dependencies.
+    - Default naming is `cxx`
+    - Git files
+    - Readme
+
+2. Initialize project:
+    ```
+    cd kikoo
+    bdep init -C ../build-msvc cc
+    ```
+    - First creates a new configuration (`-C`) using `bpkg`
+    - Second associate that configuration to this project as a default configuration.
+    ```
+    b test
+    ```
+    - Everything works fine.
+    - Make a first commit:
+    ```
+    git add .
+    git commit -m "bdep init"
+    ```
+
+3. Modify the project:
+
+    - (change the output to be "Kikoo, XXX!")
+    - (update the testscripts too)
+    - `b test`
+    - `git add . && git commit -m "Outputs Kikoo instead of Hello"`
+
+`cd ..`
+
+4. Create a new library project:
+    ```
+    bdep new print -t lib,alt-naming -l c++,cpp
+    ```
+    - Creates a library that import/export symbols when shared (see `print/export.hpp`)
+    - Tests are in a sub-project (show how the lib is imported).
+
+5. Initialize the library project with the same configuration:
+    ```
+    cd print
+    bdep init -A ../build-msvc
+    ```
+    - Then test the library: `b test`
+
+6. Make `kikoo` depends on `print`:
+    - Modify kikoo's `manifest`:
+    ```
+    depends: print
+    ```
+    - Modify `kikoo/buildfile`:
+    ```
+    import libs += print%lib{print}
+    ```
+    - Modify `kikoo/kikoo.cxx`:
+    ```
+    #include <print/print.hpp>
+    ```
+    - Ready to test: `b test`
+
+7. Modify dependency, build end app:
+    - In `print/print.cpp` add:
+    ```
+    void print(std::string text)
+    {
+        std::cout << text << std::endl;
+    }
+    ```
+    - In `print/print.hpp` add:
+    ```
+    PRINT_SYMEXPORT
+    void print(std::string text);
+    ```
+    - Try to build `kikoo`:
+    ```
+    cd ../kikoo
+    b test
+    ```
+    - Fails because changes tried to build `print` first but there is a header missing in `print/print.cpp`:
+    ```
+    #include <iostream>
+    ```
+    - `b test` works as expected.
+
+8. Create a new configuration using `clang`:
+    ```
+    cd ../print
+    bdep init -C ../build-clang @clang cc config.cxx=clang++ config.c=clang
+    ```
+    - Note `@clang` is an alias to that configuration.
+    ```
+    cd ../kikoo
+    bdep init -A ../build-clang @clang
+    ```
+
+9. Test all configurations:
+    ```
+    bdep test -a
+    ```
+    - We can also test the dependencies recursively
+    ```
+    bdep test -a -r
+    ```
 
 ### Demo 14 : juggle with dependencies
 
@@ -424,7 +571,15 @@ build test all
 
 
 
-### Demo 16 :
+### Demo 16 : CI
+
+
+
+### Demo 17 : Publish
+
+
+
+
 
 
 

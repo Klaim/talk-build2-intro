@@ -9,3 +9,5 @@ email: mjklaim@gmail.com
 
 depends: * build2 >= 0.12.0
 depends: * bpkg >= 0.12.0
+
+depends: fmt ^6.0.0

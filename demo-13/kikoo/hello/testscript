@@ -1,0 +1,14 @@
+
+: basics
+:
+$* 'World' > '> Hello, World!'
+
+
+: missing-name
+:
+$* 2>>EOE != 0
+> I need a (1) name.
+EOE
+
+
+
