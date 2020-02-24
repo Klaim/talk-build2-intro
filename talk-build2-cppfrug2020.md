@@ -555,6 +555,23 @@ Instead we use `bdep` to handle our projects.
     bdep test -a -r
     ```
 
+10. Add a dependencies from the central repo:
+    - (Uncomment cppget.org in `repositories.manifest`)
+    - Add somme packages in `manifest`:
+    ```
+    depends: fmt ^6.0.0
+    depends: sol2 ^3.2.0
+    ```
+    - Try to test `kikoo`:
+    ```
+    cd ../kikoo
+    b test
+    ```
+    - `build2` detects changes of all dependencies and changes in repository lists
+    - It does not detects if the content of repositories have changed, in that case we would need to fetch the new dependencies with `bdep fetch`
+
+
+
 ### Demo 15 : Juggle with dependencies
 
 Let's see how to handle dependencies on the fly.
