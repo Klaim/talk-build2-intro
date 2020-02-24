@@ -449,11 +449,11 @@ Instead we use `bdep` to handle our projects.
     ```
     - (show directory created)
     - Almost similar project except:
+    - Git files
+    - Readme
     - `repositories.manifest` : where we can specify some repositories to add to configs automatically.
         - Useful for specific in-dev dependencies.
     - Default naming is `cxx`
-    - Git files
-    - Readme
 
 2. Initialize project:
     ```
@@ -538,7 +538,7 @@ Instead we use `bdep` to handle our projects.
 8. Create a new configuration using `clang`:
     ```
     cd ../print
-    bdep init -C ../build-clang @clang cc config.cxx=clang++ config.c=clang
+    bdep init -C ../build-clang @clang --options-file ../options/clang.config
     ```
     - Note `@clang` is an alias to that configuration.
     ```
@@ -555,7 +555,24 @@ Instead we use `bdep` to handle our projects.
     bdep test -a -r
     ```
 
-### Demo 14 : juggle with dependencies
+### Demo 15 : Juggle with dependencies
+
+Let's see how to handle dependencies on the fly.
+
+0. New project with configuration
+    ```
+    bdep new myapp
+    cd myapp
+    bdep init -C ../build-msvc
+    ```
+
+1. Add `plf-colony` as dependency:
+    - In `repositories.manifest`:
+    ```
+    :
+    role: prerequisite
+    location: https://pkg.cppget.org/1/stable
+    ```
 
 - clone big project
 - in libkikoo project:
@@ -565,19 +582,19 @@ Instead we use `bdep` to handle our projects.
 - change version of one dependency (no manifest change)
 -
 
-### Demo 15 : release versions
+
+### Demo 16 : CI
+
+
+
+### Demo 17 : release versions
 
 - make a release of libkikoo
 - modify libkikoo
 - make another release of libkikoo
 
 
-
-### Demo 16 : CI
-
-
-
-### Demo 17 : Publish
+### Demo 18 : Publish
 
 
 
