@@ -10,3 +10,10 @@ exe{hello} : {cxx}{hello}
 
 
 
+
+
+
+
+
+
+# hxx{*} : extension = hpp
