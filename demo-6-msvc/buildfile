@@ -1,6 +1,6 @@
 cxx.std = experimental
 
-cxx.features.symexport = true
+# cxx.features.symexport = true
 
 using cxx
 
@@ -8,8 +8,6 @@ cxx{*}: extension = cpp
 hxx{*}: extension = hpp
 mxx{*}: extension = mpp
 
-
-./ : exe{hello} lib{print}
 
 exe{hello} : hello/{hxx cxx}{*} libs{print}
 

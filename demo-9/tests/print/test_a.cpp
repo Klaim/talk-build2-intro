@@ -3,5 +3,5 @@
 int main()
 {
     // print("OK");
-    return EXIT_FAILURE;
+    // return EXIT_FAILURE;
 }

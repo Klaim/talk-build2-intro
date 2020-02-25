@@ -1,8 +1,0 @@
-
-using cxx
-
-cxx{*}: extension = cpp
-hxx{*}: extension = hpp
-
-exe{hello} : cxx{kikoo}
-

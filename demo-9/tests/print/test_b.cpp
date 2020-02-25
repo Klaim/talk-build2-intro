@@ -3,5 +3,5 @@
 int main()
 {
     // print_error("AS EXPECTED");
-    throw "failure";
+    // throw "failure";
 }

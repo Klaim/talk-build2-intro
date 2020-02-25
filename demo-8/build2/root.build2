@@ -1,8 +1,8 @@
+cxx.std = 17
 
 using cxx
 
 cxx{*}: extension = cpp
 hxx{*}: extension = hpp
 
-exe{hello} : {cxx hxx}{**}
 

@@ -9,6 +9,6 @@ int main (int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    print( "Hello, "+ std::string(argv[1]) + "!???");
+    print( "Hello, "+ std::string(argv[1]) + "!");
 }
 

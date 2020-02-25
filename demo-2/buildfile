@@ -1,0 +1,12 @@
+
+
+using cxx
+
+cxx{*} : extension = cpp
+
+exe{hello} : {cxx}{hello}
+
+
+
+
+

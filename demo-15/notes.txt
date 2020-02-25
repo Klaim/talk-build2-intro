@@ -1,0 +1,8 @@
+bdep new myapp
+cd myapp
+
+
+bdep init -C ../build-msvc
+
+#libmachin
+https://github.com/Klaim/talk-build2-libmachin.git

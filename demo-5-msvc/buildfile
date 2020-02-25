@@ -1,0 +1,27 @@
+cxx.std = experimental
+
+using cxx
+
+cxx{*} : extension = cpp
+hxx{*} : extension = hpp
+# mxx{*} : extension = mpp
+
+exe{hello} : hello/{cxx}{*} liba{print}
+
+lib{print} : print/{cxx}{*}
+
+
+
+
+
+
+
+
+
+# lib{print} : print/{mxx cxx}{*}
+
+
+
+
+
+

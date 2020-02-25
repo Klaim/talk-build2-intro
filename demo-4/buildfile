@@ -1,0 +1,35 @@
+
+
+using cxx
+
+cxx{*} : extension = cpp
+hxx{*} : extension = hpp
+
+exe{hello} : hello/{hxx cxx}{*} liba{print}
+
+lib{print} : print/{cxx hxx}{*}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# cxx.poptions =+ "-I$src_root"
+
+
+
+
+# lib{print} : cxx.export.poptions =+ "-I$src_root"
+
+
+
+
+

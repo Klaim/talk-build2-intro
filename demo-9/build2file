@@ -4,15 +4,13 @@ if ($cxx.target.class != 'windows')
     cxx.libs += -lpthread
 }
 
-./ : exe{hello} lib{print}
-
 exe{hello} : hello/{hxx cxx}{*} liba{print}
-# exe{hello} : hello/testscript
+exe{hello} : hello/testscript
 
 lib{print} : print/{cxx hxx}{*}
 lib{print} : cxx.export.poptions =+ "-I$src_root"
 
-for test_cpp : cxx{tests/print/**}
+for test_cpp : tests/print/cxx{**}
 {
     test_name = $name($test_cpp)
     ./ : exe{$test_name} : $test_cpp liba{print}

@@ -1,11 +1,11 @@
 : 1
 name: kikoo
 version: 0.1.0-a.0.z
-summary: kikoo toolset
-license: proprietary
-description-file: README.md
-url: https://example.org/mylib
-email: mjklaim@gmail.com
+# summary: kikoo toolset
+# license: proprietary
+# description-file: README.md
+# url: https://example.org/mylib
+# email: mjklaim@gmail.com
 
 depends: * build2 >= 0.12.0
 depends: * bpkg >= 0.12.0

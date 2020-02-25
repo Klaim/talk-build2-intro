@@ -1,0 +1,13 @@
+
+
+using cxx
+
+cxx{*} : extension = cpp
+hxx{*} : extension = hpp
+
+exe{hello} : {cxx}{hello} liba{print}
+
+lib{print} : {cxx hxx}{print}
+
+
+

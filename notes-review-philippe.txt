@@ -1,0 +1,36 @@
+
+
+- fichiers final dans un autre dossier (cacher)
+- bouger la demo dans un path petit
+- clarifier slide 11 que c'est du pseudo-code
+- slide 11, potentiellement enlever la premiere ligne
+- plus de temps sur bdep
+- CTRL+L
+- attention aux copier/coller vs dual screen absent
+- demo 2 : definir globber
+- skip `exe{hello} : {hxx cxx}{print}`
+- demo 3 : skip requirement ./ (just mentionne le cas par defaut de la premiere target)
+- clarifier que -I est transformé de maniere portable dés qu'on le mentionne
+- demo 4 : ... ok
+- slide 12: variables typées (pas comme cmake)
+- demo-7: skipp conditionals et loops
+- skipper alt-naming
+- demo-9: skipp tests qui fail mais garde testscript
+- skipper clarification `testscript{testscript}`
+- demo-12: attention clarification lib{x} vs liba{x}
+- manifest peut etre minimal
+- configuration: insister sur le fait que la config contiens les dependences + build des dependences + comment récupérer les dependences
+- slide 19: pas besoin de montrer cppget.org
+- demo-13: skip build in config via url
+- demo-14: skipp details de symbols import/export, juste mentionne
+- clarifier liens entre config, projects et projects locaux
+- clarifier rapidement que si tu bosses sur 2 projets interdependants en meme temps, build2 va tracker les changements automatiquement
+- demo de bigdemo est interessante
+- skip la CI ( ;__; )
+- skip les modules ( ;_________; )
+- essayer de montrer sans manipuler (pré-faits) pas mal de fichiers, comme les root.build2
+
+
+
+
+

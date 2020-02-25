@@ -4,8 +4,6 @@ if ($cxx.target.class != 'windows')
     cxx.libs += -lpthread
 }
 
-./ : exe{hello} lib{print}
-
 exe{hello} : hello/{hxx cxx}{*} liba{print}
 exe{hello} : hello/testscript
 

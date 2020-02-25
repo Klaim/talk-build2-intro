@@ -1,0 +1,8 @@
+
+# Clone
+git clone https://github.com/klaim/talk-build2-bigdemo.git bigdemo
+
+# Initialize
+cd bigdemo
+bdep init -C ../build-msvc
+

@@ -27,20 +27,15 @@ These are the live-coding notes.
     ```
     exe{hello} : cxx{hello}
     ```
-   - `build2` follows a inherit the target system from make
-   - (show slides on target syntax)
-   - `cxx` targets are C++ compilation unit, `hxx` are C++ headers etc.
-
-
-5. Change the default extension to `cpp` and `hpp`:
+    - `build2` follows a inherit the target system from make
+    - (show slides on target syntax)
+    - `cxx` targets are C++ compilation unit, `hxx` are C++ headers etc.
+    - By default `cxx` is associated to extension `.cxx`. We can change that:
     ```
-    cxx{*}: extension = cpp
-    hxx{*}: extension = hpp
+    cxx{*} : extension = cpp
     ```
-   - By default the extension searched is `cxx`, `hxx`, etc. but we can change it to whatever.
-   - Targets and target types have variables to specify their properties.
 
-6. Build & run:
+5. Build & run:
     ```
     b
     ./hello Man
@@ -53,15 +48,9 @@ These are the live-coding notes.
     b config.cxx=clang++
     ```
     - On Windows, the default `msvc` compiler is the highest version, including previews.
-    - We can pecify a compiler path (the rest is guessed from the compiler name):
-    ```
-    b "config.cxx='...\VC\Tools\MSVC\14.23.28105\bin\Hostx64\x86\cl'"
-    ```
-    - We can specify `C++` version that way too, otherwise it's `latest`:
-    ```
-    b config.cxx.std=17     # -std=c++17 (if the compiler allows it)
-    b config.cxx.std=latest # highest available C++ version
-    ```
+    - We can pecify a compiler path, the toolchain will be deduced.
+    - Almost all the variables can be overwritten through cli.
+
 
 7. Cleanup:
     ```
@@ -82,18 +71,13 @@ These are the live-coding notes.
 ### Demo 2 : just build all the files
 
 1. Separate the printing into files: `print.hpp` `print.cpp`
+    - We could add them one by one but it's tedious and prevent easy refactoring.
+    - Specify that our headers type `hxx` will have extension `hpp`:
+    ```
+    hxx{*} : extension = hpp
+    ```
 
-2. To build these files too:
-    ```
-    exe{hello} : cxx{hello print} hxx{print}
-    ```
-    - Requirements of the same types can be grouped in the same expression.
-    ```
-    exe{hello} : {hxx cxx}{hello print}
-    ```
-    - Search files of the right type/extension with these names.
-
-3. Glob all the cpp and hpp files:
+2. Glob all the cpp and hpp files:
     ```
     exe{hello} : cxx{*} hxx{*}
     ```
@@ -101,7 +85,7 @@ These are the live-coding notes.
     ```
     exe{hello} : cxx{**} hxx{**}
     ```
-    - Recursively glob.
+    - Recursively glob everything with the types.
     ```
     exe{hello} : {cxx hxx}{**}
     ```
@@ -120,25 +104,16 @@ These are the live-coding notes.
 
     lib{print} : {cxx hxx}{print}
     ```
-    - order of target declaration is not important
-    - by default the first target (and it's requirement) is built
-    - requiring the directory to build targtets by default:
-    ```
-    ./ : exe{hello} lib{print}
-    ```
-    - or by chaining requirements:
-    ```
-    ./ : exe{hello} : {cxx}{hello} lib{print}
-    ./ : lib{print} : {cxx hxx}{print}
-    ```
+    - order of target declaration is not important most of the time
+    - by default the first target (and it's requirement) is built (there are ways to change that)
 
 3. Force usage of the static version of the `print` library (`liba` target type):
     ```
     exe{hello} : {cxx}{hello} liba{print}
     ```
-    - Libraries can be static-only, dynamic/shared-only or both (the default).
-    - User can specify which version they want.
+    - `lib` target type generate `liba` static, `libs` dynamic/shared.
     - By default, use the dynamic/shared version.
+    - User can specify which kind they want.
     - Use the usual symbol export/import macros in libraries that need to be shared/dynamic.
 
 ### Demo 4 : just a bunch of libraries
@@ -219,9 +194,7 @@ We now `lib{print}` use `<thread>`, it needs to depend on `pthread`.
     ```
     - Language is declarative but does allow loops and conditions
 
-2. Pattern matching with `switch`:
-
-3. Generate executable per cpp with `for`:
+2. Generate executable per cpp with `for`:
     ```
     for test_cpp : cxx{tests/print/**}
     {
@@ -301,6 +274,8 @@ We want this to be a real testable project.
 
 ### Demo 10 : Simple Configuration
 
+SKIP SKIP SKIP SKIP SKIP SKIP
+
 We want to always use clang instead of the default compiler (msvc):
 
 1. Change the compiler to clang and build and test:
@@ -359,7 +334,7 @@ We want to always use clang instead of the default compiler (msvc):
    - The version number follows SEMVER pluss a few rules to make `build2` automatically manage it.
    - Here the `z` is whatever identifies this non-released version and `a` means "alpha".
 
-2. Install:
+2. SKIP SKIP SKIP: Install:
     ```
     b install
     ```
@@ -375,15 +350,7 @@ We want to always use clang instead of the default compiler (msvc):
 
 0. Importing Dependencies
 
-1. Depend on `lib{fmt}`:
-    - Add in `build2file`:
-    ```
-    import dependencies = fmt%lib{fmt}
-    lib{print} : $dependencies
-    ```
-    - We get an error because the package is not found.
-
-2. Depend on `fmt` package:
+1. Depend on `fmt` package:
     - Add in `manifest`:
     ```
     depends: fmt ^6.0.0
@@ -392,7 +359,16 @@ We want to always use clang instead of the default compiler (msvc):
     - Time to setup a configuration with our packages using `bpkg`.
     - The version expression defines a range of allowed versions.
 
-### Demo 13 : Dependencies And Configurations
+2. Depend on `lib{fmt}`:
+    - Add in `build2file`:
+    ```
+    import dependencies = fmt%lib{fmt}
+    lib{print} : $dependencies
+    ```
+    - We get an error because the package is not found.
+
+
+### Demo 13 : Configurations And Dependencies
 
 (introduce the notion of configuration)
 
@@ -480,10 +456,9 @@ Instead we use `bdep` to handle our projects.
     - `b test`
     - `git add . && git commit -m "Outputs Kikoo instead of Hello"`
 
-`cd ..`
-
 4. Create a new library project:
     ```
+    cd ..
     bdep new print -t lib,alt-naming -l c++,cpp
     ```
     - Creates a library that import/export symbols when shared (see `print/export.hpp`)
@@ -533,7 +508,7 @@ Instead we use `bdep` to handle our projects.
     ```
     #include <iostream>
     ```
-    - `b test` works as expected.
+    - `b test` in works as expected.
 
 8. Create a new configuration using `clang`:
     ```
@@ -555,7 +530,7 @@ Instead we use `bdep` to handle our projects.
     bdep test -a -r
     ```
 
-10. Add a dependencies from the central repo:
+10. Add a dependencies from the central repo (in `print/`):
     - (Uncomment cppget.org in `repositories.manifest`)
     - Add somme packages in `manifest`:
     ```
@@ -570,8 +545,6 @@ Instead we use `bdep` to handle our projects.
     - `build2` detects changes of all dependencies and changes in repository lists
     - It does not detects if the content of repositories have changed, in that case we would need to fetch the new dependencies with `bdep fetch`
 
-
-
 ### Demo 15 : Juggle with dependencies
 
 Let's see how to handle dependencies on the fly.
@@ -580,29 +553,58 @@ Let's see how to handle dependencies on the fly.
     ```
     bdep new myapp
     cd myapp
-    bdep init -C ../build-msvc
     ```
 
 1. Add `plf-colony` as dependency:
-    - In `repositories.manifest`:
+    - (Uncomment cppget in `repositories.manifest`)
+    - Add in `manifest` : `depends: plf-colony ~5.11.0` (any patch version)
+    - `bdep init -C ../build-msvc`
+    - Everything is fine.
+
+2. Add `libmachin` as dependency:
+    - Add in `repositories.manifest`:
     ```
     :
     role: prerequisite
-    location: https://pkg.cppget.org/1/stable
+    location: https://github.com/Klaim/talk-build2-libmachin.git
+    ```
+    - Add in `manifest` : `depends: libmachin ^1.0.0`
+    - `b test`
+
+3. Upgrade dependency `libmachin`:
+    - Change `manifest`: `depends: libmachin ^2.0.0`
+    - Conflict because `libmachin` v2.x depends on `plf-colony v5.20`
+
+4. Fix conflict:
+    - Change `manifest`: `depends: plf-colony ^5.0.0` (any minor+patch version)
+    - `b test`
+
+5. Force a specific version that is compatible with the manifest:
+    - Try `libmachin v2.0.0`:
+    ```
+    bdep sync libmachin/2.0.0
     ```
 
-- clone big project
-- in libkikoo project:
-- add dependencies from main repo
-- bdep status -r
-- in kikoo project:
-- change version of one dependency (no manifest change)
--
-
+6. See dependency tree:
+    ```
+    bdep status -r
+    ```
 
 ### Demo 16 : CI
 
-
+1. Clone and initialize a bigger project:
+    ```
+    git clone https://github.com/klaim/talk-build2-bigdemo.git bigdemo
+    cd bigdemo
+    bdep init -C ../build-msvc
+    ```
+    - Everything is dowloaded and configured to the right versions.
+    - Look at the dependency tree:
+    ```
+    bdep status -r
+    ```
+    - That project contains 2 packages.
+    -
 
 ### Demo 17 : release versions
 

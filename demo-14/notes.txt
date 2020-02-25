@@ -1,0 +1,4 @@
+
+# Create clang configuration
+bdep init -C ../build-clang @clang --options-file ../options/clang.config
+

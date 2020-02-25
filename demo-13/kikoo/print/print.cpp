@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <mutex>
-// #include <fmt/format.hpp>
+#include <fmt/format.h>
 
 static std::mutex print_mutex;
 
