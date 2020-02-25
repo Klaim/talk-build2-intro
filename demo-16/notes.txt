@@ -6,3 +6,9 @@ git clone https://github.com/klaim/talk-build2-bigdemo.git bigdemo
 cd bigdemo
 bdep init -C ../build-msvc
 
+# Add in libbigdemo\libbigdemo\bigdemo.cxx
+include <fmt/printf.h>
+
+# Commit change
+git add . && git commit -m "Made a change"
+

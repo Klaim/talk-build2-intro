@@ -590,12 +590,12 @@ Let's see how to handle dependencies on the fly.
     bdep status -r
     ```
 
-### Demo 16 : CI
+### Demo 16.1 : CI, Release, Publish
 
 1. Clone and initialize a bigger project:
     ```
     git clone https://github.com/klaim/talk-build2-bigdemo.git bigdemo
-    cd bigdemo
+    cd ./bigdemo
     bdep init -C ../build-msvc
     ```
     - Everything is dowloaded and configured to the right versions.
@@ -603,17 +603,32 @@ Let's see how to handle dependencies on the fly.
     ```
     bdep status -r
     ```
-    - That project contains 2 packages.
-    -
+    - That project contains 2 packages in the same repository, useful when packages/projects are closely developped.
+    - That have implications on how we handle these projects but we'll skip that.
+    - `bdep test` works as it should.
 
-### Demo 17 : release versions
+2. Modify the project:
+    - Add in `libbigdemo\libbigdemo\bigdemo.cxx`: `include <fmt/printf.h>`
+    - `bdep test`
+    - `git add . && git commit -m "Made a change"`
 
-- make a release of libkikoo
-- modify libkikoo
-- make another release of libkikoo
+3. Request CI to test the project at the current version (commited, unreleased).
+    - `git push` Required for the CI to access the content of the repo.
+    - `bdep ci`
+    - (show the CI webpage)
+
+4. This version is ready, make a release:
+    - `bdep release`
+    - `gitk --all` Show the commits and tag.
+    - `git push && git push --tags`
+
+5. Publish on cppget.org:
+    - `bdep publish` (don't say yes)
 
 
-### Demo 18 : Publish
+
+
+
 
 
 
